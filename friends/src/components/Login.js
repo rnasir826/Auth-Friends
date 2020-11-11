@@ -1,5 +1,6 @@
 import React from 'react';
-import {axiosWithAuth} from '../utils/axiosWithAuth';
+// import {axiosWithAuth} from '../utils/axiosWithAuth';
+import axios from 'axios';
 
 class Login extends React.Component {
     state = {
@@ -21,24 +22,20 @@ class Login extends React.Component {
 
     login = e => {
         e.preventDefault();
-        //make POST request to send credentials to api
-        //navigate user to the protected landing page
-        axiosWithAuth()
-            .post('/api/login', this.state.credentials)
-            .then(res => {
-                window.localStorage.setItem('token', res.data.payload);
+        axios.post('/api/login', this.state.credentials)
+            .then(req => {
+                window.localStorage.setItem('token', req.data.payload);
                 this.props.history.push('/protected')
+                this.props.setLoggedIn(true);
             })
             .catch((err) => {
-                this.setState({
-                  error: err.response.data.error
-                });
+               console.log(err)
               });
           };
 
     render() {
         return (
-            <>
+            <div>
                 <form onSubmit={this.login}>
                     <label>UserName</label>
                     <input 
@@ -56,9 +53,9 @@ class Login extends React.Component {
                     />
                     <button>Log In</button>
                 </form>
-                <p style={{ color: "red" }}>{this.state.error}</p>
-            </> 
+                
+            </div> 
         )
     }
 }
-export default Login 
+export default Login;
